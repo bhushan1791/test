@@ -1,0 +1,29 @@
+public Optional<List<PayModeDetailsDto>> getApplicablePaymode(String mId) {
+        Optional<List<PayModeDetailsDto>> payModeDetailsDtoList = merchantCacheRepository.getApplicablePaymode(mId);
+        if (payModeDetailsDtoList.isEmpty()) {
+
+            List<Object[]> result= transactionBookingPricingRepo.getApplicablePayMode(mId).orElseThrow(() ->
+                    new TransactionException(ErrorConstants.NOT_FOUND_ERROR_CODE, MessageFormat.format(ErrorConstants.NOT_FOUND_ERROR_MESSAGE, "Bank pay mode details")));
+
+            payModeDetailsDtoList= Optional.of(
+
+                    result.stream().map(res ->
+                    new PayModeDetailsDto(
+                    (String) res[0],
+                    (String) res[1],
+                    (String) res[2],
+                    (String) res[3],
+                    (String) res[4],
+                    (String) res[5],
+                    (String) res[6],
+                    (String) res[7],
+                    (String) res[8],
+                    (Character) res[9],
+                    (String)res[10],
+                    (String)res[11],
+                    0L,
+                    0L
+            )).collect(Collectors.toList()));
+        }
+        return payModeDetailsDtoList;
+    }
