@@ -1,0 +1,9 @@
+SELECT 
+pricing.merchant_id,pricing.pay_gtw_id,pricing.operating_mode_id,
+pricing.country_code,pricing.currency_code, pricing.access_medium_code,
+pricing.pay_mode_code, pricing.pay_proc_id,pricing.agg_gtw_map_id,
+pricing.status,feeStructure.pay_proc_type ,paymaster.pay_gtw_name 
+FROM merchant_pricing_view pricing  
+join MERCHANT_FEE_STRUCTURE_VIEW feeStructure on feeStructure.merchant_id=pricing.merchant_id  
+join pay_gateway_master_view paymaster on paymaster.pay_gtw_id=pricing.pay_gtw_id 
+WHERE pricing.merchant_id =?  AND pricing.status = 'A' and paymaster.pay_gtw_name=ANY(string_to_array(?,','))
